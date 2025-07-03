@@ -5,7 +5,8 @@
     "description":"Get the word count of your text",
     "author":"Daniel Stone",
     "icon":"counter",
-    "tags":"count,length,size,words"
+    "tags":"count,length,size,words",
+    "categories":["analysis","text"]
   }
 **/
 function main(input) {

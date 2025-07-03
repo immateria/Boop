@@ -45,7 +45,13 @@ class ScriptsTableViewController: NSViewController, NSTableViewDelegate, NSTable
         }
         
         view.titleLabel.stringValue = script.name ?? "No Name 🤔"
-        view.subtitleLabel.stringValue = script.desc ?? "No Description 😢"
+
+        var subtitle = script.desc ?? "No Description 😢"
+        if let cats = script.categories, !cats.isEmpty {
+            let display = cats.map { $0.capitalized }.joined(separator: " · ")
+            subtitle += " \u2022 " + display
+        }
+        view.subtitleLabel.stringValue = subtitle
         
         view.imageView?.image = self.scriptIcon(identifier: script.icon)
         

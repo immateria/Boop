@@ -23,9 +23,14 @@ From the script picker, start typing to search for a script. You can then press 
 
 You can run the last script again by pressing `⇧⌘B` or from the option in the scripts menu.
 
-To start over, you can clear the editor by pressing `⌘N`. 
+To start over, you can clear the editor by pressing `⌘N`.
+
+If a script messed up your text, you can undo it with `⌥⌘Z`. To redo an undone script, use `⇧⌥⌘Z`.
+You can clear the script history with `⌥⌘K` and change how many undo steps are kept in the Scripts preferences.
 
 If you are developing scripts, you can reload all the script by pressing `⇧⌘R` or  from the script menu as well.
+
+You can also manage scripts without leaving the app. Choose **Scripts → New Script** to insert a template, **Open Script…** to load an existing file, then **Save Script** or **Save Script As…** to store your changes. Use **Delete Script…** to remove a script you no longer need. The script list reloads automatically after saving or deleting.
 
 ## Questions
 

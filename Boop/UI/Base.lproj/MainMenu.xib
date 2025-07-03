@@ -196,6 +196,24 @@
                                     <action selector="redo:" target="-1" id="oIA-Rs-6OD"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Undo Last Script" keyEquivalent="z" id="UNDO-SCRIPT-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="undoLastScript:" target="-1" id="UNDO-SCRIPT-ACT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Redo Last Script" keyEquivalent="Z" id="REDO-SCRIPT-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES" shift="YES"/>
+                                <connections>
+                                    <action selector="redoLastScript:" target="-1" id="REDO-SCRIPT-ACT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Clear Script History" keyEquivalent="k" id="CLEAR-HISTORY-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="clearScriptHistory:" target="-1" id="CLEAR-HISTORY-ACT"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="WRV-NI-Exz"/>
                             <menuItem title="Cut" keyEquivalent="x" id="uRl-iY-unG">
                                 <connections>
@@ -446,6 +464,36 @@ Gw
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="Zfh-13-od8"/>
+                            <menuItem title="Open Script…" keyEquivalent="o" id="OPEN-SCRIPT-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="openScript:" target="Voe-Tx-rLC" id="OPEN-SCRIPT-ACT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="New Script" keyEquivalent="n" id="NEW-SCRIPT-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="newScript:" target="Voe-Tx-rLC" id="NEW-SCRIPT-ACT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Save Script" keyEquivalent="s" id="SAVE-SCRIPT-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                <connections>
+                                    <action selector="saveScript:" target="Voe-Tx-rLC" id="SAVE-SCRIPT-ACT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Save Script As…" keyEquivalent="s" id="SAVE-AS-SCRIPT-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="saveScriptAs:" target="Voe-Tx-rLC" id="SAVE-AS-SCRIPT-ACT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Delete Script…" id="DELETE-SCRIPT-ITEM">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="deleteScript:" target="Voe-Tx-rLC" id="DELETE-SCRIPT-ACT"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Reload Scripts" keyEquivalent="R" id="AVC-ge-jRm">
                                 <connections>
                                     <action selector="reloadScripts:" target="Voe-Tx-rLC" id="Rmu-D9-Xm5"/>

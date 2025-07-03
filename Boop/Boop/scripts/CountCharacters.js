@@ -5,8 +5,9 @@
 		"description":"Get the length of your text",
 		"author":"Ivan",
 		"icon":"counter",
-		"tags":"count,length,size,character"
-	}
+                "tags":"count,length,size,character",
+                "categories":["analysis","text"]
+        }
 **/
 
 

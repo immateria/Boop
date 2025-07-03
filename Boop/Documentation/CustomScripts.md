@@ -31,6 +31,9 @@ Each script starts with a declarative JSON document, describing the contents of 
 * `name`, `description` and `author` are exactly what you think they are.
 * `icon` is a visual representation of your scripts' actions. You can see available icons in `Boop/Assets.xcassets/Icons/`. On macOS 11 and above you can also use [SF Symbols](https://developer.apple.com/sf-symbols/). If you can't find what you like, feel free to create an issue and we'll make it work!
 * `tags` are used by the fuzzy-search algorythm to filter and sort results.
+* `categories` is an optional array or comma-separated string allowing scripts
+  to belong to multiple groups, such as `"text"` or `"convert"`. Users can
+  filter the picker by category with `cat:name`, e.g. `cat:text`.
 
 An optional property, `bias`, can also be added to help Boop prioritize your scripts. A positive value will move your script higher in the results, a negative value will push it further down. The bias property is a number:
 

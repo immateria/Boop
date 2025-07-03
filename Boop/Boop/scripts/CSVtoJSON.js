@@ -5,9 +5,10 @@
 		"description":"Converts comma-separated tables to JSON.",
 		"author":"Ivan",
 		"icon":"table",
-		"tags":"table,convert",
-        	"bias": -0.2
-	}
+                "tags":"table,convert",
+                "categories":["convert","text"],
+                "bias": -0.2
+        }
 **/
 const Papa = require('@boop/papaparse.js');
 
