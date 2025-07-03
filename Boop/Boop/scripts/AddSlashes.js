@@ -5,8 +5,9 @@
 		"description":"Escapes your text.",
 		"author":"Ivan",
 		"icon":"quote",
-		"tags":"add,slashes,escape"
-	}
+                "tags":"add,slashes,escape",
+                "categories":["text","convert"]
+        }
 **/
 
 function main(input) {

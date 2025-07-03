@@ -17,6 +17,26 @@ class ScriptManager: NSObject {
     
     static let userPreferencesPathKey = "scriptsFolderPath"
     static let userPreferencesDataKey = "scriptsFolderData"
+    static let defaultScriptTemplate = """
+/**
+  {
+    \"api\":1,
+    \"name\":\"New Boop Script\",
+    \"description\":\"What does your script do?\",
+    \"author\":\"\",
+    \"icon\":\"broom\",
+    \"tags\":\"example\"
+  }
+**/
+
+function main(state) {
+  try {
+    // Your code here
+  } catch (error) {
+    state.postError(String(error))
+  }
+}
+"""
     
     // This probably does not belong here.
     @IBOutlet weak var statusView: StatusView!
@@ -27,12 +47,66 @@ class ScriptManager: NSObject {
     let currentAPIVersion = 1.0
     
     var lastScript: Script?
+
+    static let userPreferencesHistoryDepthKey = "scriptHistoryDepth"
+
+    private struct EditorState {
+        let text: String
+        let ranges: [NSRange]
+        let scriptName: String?
+    }
+
+    private var undoStack: [EditorState] = []
+    private var redoStack: [EditorState] = []
+
+    private var maxHistoryDepth: Int {
+        let stored = UserDefaults.standard.integer(forKey: ScriptManager.userPreferencesHistoryDepthKey)
+        return stored > 0 ? stored : 20
+    }
     
     override init() {
         super.init()
-        
+
         loadDefaultScripts()
         loadUserScripts()
+    }
+
+    private func captureState(editor: SyntaxTextView, scriptName: String?) {
+        let text = editor.text
+        let ranges = (editor.contentTextView.selectedRanges as? [NSRange]) ?? []
+        undoStack.append(EditorState(text: text, ranges: ranges, scriptName: scriptName))
+        if undoStack.count > maxHistoryDepth {
+            undoStack.removeFirst(undoStack.count - maxHistoryDepth)
+        }
+        redoStack.removeAll()
+    }
+
+    func undoLastScript(editor: SyntaxTextView) {
+        guard let last = undoStack.popLast() else {
+            NSSound.beep()
+            return
+        }
+
+        let current = EditorState(text: editor.text,
+                                  ranges: (editor.contentTextView.selectedRanges as? [NSRange]) ?? [],
+                                  scriptName: last.scriptName)
+        redoStack.append(current)
+        replaceText(ranges: [NSRange(location: 0, length: editor.contentTextView.textStorage?.length ?? editor.text.count)], values: [last.text], editor: editor)
+        editor.contentTextView.selectedRanges = last.ranges.map { NSValue(range: $0) }
+    }
+
+    func redoLastScript(editor: SyntaxTextView) {
+        guard let next = redoStack.popLast() else {
+            NSSound.beep()
+            return
+        }
+
+        let current = EditorState(text: editor.text,
+                                  ranges: (editor.contentTextView.selectedRanges as? [NSRange]) ?? [],
+                                  scriptName: next.scriptName)
+        undoStack.append(current)
+        replaceText(ranges: [NSRange(location: 0, length: editor.contentTextView.textStorage?.length ?? editor.text.count)], values: [next.text], editor: editor)
+        editor.contentTextView.selectedRanges = next.ranges.map { NSValue(range: $0) }
     }
     
 
@@ -108,27 +182,44 @@ class ScriptManager: NSObject {
     }
     
     func search(_ query: String) -> [Script] {
-        
-        
+
         guard query.count < 20 else {
             // If the query is too long let's just ignore it.
             // It's probably the user pasting the wrong thing
             // in the search box by accident which overwhelms
             // fuse and crashes the app. Whoops!
-            
             return []
         }
-        
-        guard query != "*" else {
-            
-            return scripts.sorted { left, right in
+
+        var searchQuery = query
+        var filterCategories: [String] = []
+
+        let regex = try? NSRegularExpression(pattern: "(?i)\\b(?:cat|category):([\\w,-]+)")
+        if let match = regex?.firstMatch(in: query, range: NSRange(query.startIndex..., in: query)),
+           let range = Range(match.range(at: 1), in: query) {
+            filterCategories = query[range]
+                .split { $0 == "," || $0.isWhitespace }
+                .map { $0.lowercased() }
+            searchQuery = regex!.stringByReplacingMatches(in: query, range: NSRange(query.startIndex..., in: query), withTemplate: "")
+            searchQuery = searchQuery.trimmingCharacters(in: .whitespaces)
+        }
+
+        if searchQuery == "*" || searchQuery.isEmpty {
+            var all = scripts.sorted { left, right in
                 left.name ?? "" < right.name ?? ""
             }
+            if !filterCategories.isEmpty {
+                all = all.filter { script in
+                    guard let cats = script.categories else { return false }
+                    return filterCategories.allSatisfy { cats.contains($0) }
+                }
+            }
+            return all
         }
-        
-        let results = fuse.search(query, in: scripts)
-        
-        return results.filter { result in
+
+        let results = fuse.search(searchQuery, in: scripts)
+
+        var filtered = results.filter { result in
             result.score < 0.4 // Filter low quality results
         }.sorted { left, right in
             let leftScore = left.score - (scripts[left.index].bias ?? 0)
@@ -137,14 +228,24 @@ class ScriptManager: NSObject {
         }.map { result in
             scripts[result.index]
         }
+
+        if !filterCategories.isEmpty {
+            filtered = filtered.filter { script in
+                guard let cats = script.categories else { return false }
+                return filterCategories.allSatisfy { cats.contains($0) }
+            }
+        }
+
+        return filtered
     }
     
     func runScript(_ script: Script, into editor: SyntaxTextView) {
-        
+
         let fullText = editor.text
-        
+
         lastScript = script
-        
+        captureState(editor: editor, scriptName: script.name)
+
         guard let ranges = editor.contentTextView.selectedRanges as? [NSRange], ranges.reduce(0, { $0 + $1.length }) > 0 else {
             
             let insertPosition = (editor.contentTextView.selectedRanges.first as? NSRange)?.location
@@ -232,8 +333,25 @@ class ScriptManager: NSObject {
             NSSound.beep()
             return
         }
-        
+
         runScript(script, into: editor)
+    }
+
+    func clearHistory() {
+        undoStack.removeAll()
+        redoStack.removeAll()
+    }
+
+    func peekUndoScriptName() -> String? {
+        undoStack.last?.scriptName
+    }
+
+    func peekRedoScriptName() -> String? {
+        redoStack.last?.scriptName
+    }
+
+    var canClearHistory: Bool {
+        return !undoStack.isEmpty || !redoStack.isEmpty
     }
     
     func reloadScripts() {

@@ -5,8 +5,9 @@
 		"description":"Converts ASCII characters to hexadecimal codes.",
 		"author":"aWZHY0yQH81uOYvH",
 		"icon":"metamorphose",
-		"tags":"ascii,hex,convert"
-	}
+                "tags":"ascii,hex,convert",
+                "categories":["convert","numbers"]
+        }
 **/
 
 function main(state) {

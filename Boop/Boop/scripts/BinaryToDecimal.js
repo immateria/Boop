@@ -5,9 +5,10 @@
    "description": "Converts binary values to decimal.",
    "author": "Maurice",
    "icon": "metamorphose",
-   "tags": "decimal,binary,dec,bin"
+   "tags": "decimal,binary,dec,bin",
+   "categories": ["convert","numbers"]
  }
- **/
+**/
 
 function main(state) {
   var text = state.text;

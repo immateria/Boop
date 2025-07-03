@@ -47,6 +47,7 @@ class Script: NSObject {
     var desc: String?
     var icon: String?
     var bias: Double?
+    var categories: [String]?
     
     weak var delegate: ScriptDelegate?
     
@@ -63,6 +64,16 @@ class Script: NSObject {
         self.desc = parameters["description"] as? String
         self.icon = (parameters["icon"] as? String)?.lowercased()
         self.bias = parameters["bias"] as? Double
+
+        if let cats = parameters["categories"] as? [String] {
+            let lower = cats.map { $0.lowercased() }
+            self.categories = Array(Set(lower)).sorted()
+        } else if let cats = parameters["categories"] as? String {
+            let lower = cats
+                .split(separator: ",")
+                .map { $0.trimmingCharacters(in: .whitespaces).lowercased() }
+            self.categories = Array(Set(lower)).sorted()
+        }
         
         
         
@@ -92,6 +103,7 @@ extension Script: Fuseable {
         return [
             FuseProperty(value: name, weight: 0.9),
             FuseProperty(value: tags, weight: 0.6),
+            FuseProperty(value: categories?.joined(separator: " "), weight: 0.4),
             FuseProperty(value: desc, weight: 0.2)
         ]
     }
