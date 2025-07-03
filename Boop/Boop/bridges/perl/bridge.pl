@@ -8,6 +8,7 @@ use File::Spec;
 my $MODULE_EXT = $ENV{BOOP_MODULE_EXT} || '.pl';
 my $SCRIPT_DIR = $ENV{BOOP_SCRIPT_DIR} || '';
 my $LIB_DIR = $ENV{BOOP_LIB_DIR} || '';
+my $REQUIRE_NAME = $ENV{BOOP_REQUIRE_NAME} || 'boop_require';
 
 my $state_json = $ENV{BOOP_STATE} || '{}';
 my $data = decode_json($state_json);
@@ -45,7 +46,7 @@ sub to_hash { my $s=shift; return { text=>$s->{text}, fullText=>$s->{fullText}, 
 
 package main;
 
-sub boop_require {
+sub _boop_require {
     my ($path) = @_;
     my $p = $path;
     $p .= $MODULE_EXT unless $p =~ /\Q$MODULE_EXT\E$/;
@@ -61,9 +62,17 @@ sub boop_require {
         CORE::require($path);
     }
 }
+no strict 'refs';
+*{$REQUIRE_NAME} = \&_boop_require;
+if ($REQUIRE_NAME ne 'boop_require') {
+    *boop_require = \&_boop_require;
+}
+use strict 'refs';
 my $script = shift @ARGV;
 my $state = State->new($data);
-boop_require("./$script");
+no strict 'refs';
+&{$REQUIRE_NAME}("./$script");
+use strict 'refs';
 State::post_error($state,'No main function') unless defined &main;
 main($state) if defined &main;
 print encode_json($state->to_hash);

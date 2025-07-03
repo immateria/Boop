@@ -5,10 +5,11 @@ data = JSON.parse(ENV['BOOP_STATE'] || '{}')
 MODULE_EXT = ENV['BOOP_MODULE_EXT'] || '.rb'
 SCRIPT_DIR = ENV['BOOP_SCRIPT_DIR'] || ''
 LIB_DIR = ENV['BOOP_LIB_DIR'] || ''
+REQUIRE_NAME = ENV['BOOP_REQUIRE_NAME'] || 'boop_require'
 
 module Kernel
   alias_method :_boop_native_require, :require
-  def boop_require(path)
+  def boop_require_impl(path)
     mod = path
     mod += MODULE_EXT unless mod.end_with?(MODULE_EXT)
     full = if mod.start_with?('@boop/')
@@ -23,7 +24,16 @@ module Kernel
       _boop_native_require(path)
     end
   end
-  module_function :boop_require
+  module_function :boop_require_impl
+end
+
+Kernel.module_eval do
+  define_method(REQUIRE_NAME) { |p| boop_require_impl(p) }
+  module_function REQUIRE_NAME
+  if REQUIRE_NAME != 'boop_require'
+    define_method(:boop_require) { |p| boop_require_impl(p) }
+    module_function :boop_require
+  end
 end
 
 class State

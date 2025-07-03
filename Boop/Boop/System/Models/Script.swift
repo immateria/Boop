@@ -126,6 +126,40 @@ enum ScriptInterpreter {
         }
     }
 
+    var defaultRequireKeyword: String {
+        switch self {
+        case .javaScriptCore, .node:
+            return "require"
+        default:
+            return "boop_require"
+        }
+    }
+
+    static var globalRequireKeyword: String? {
+        UserDefaults.standard.string(forKey: "runtime.require.keyword")
+    }
+
+    var requireKey: String {
+        switch self {
+        case .javaScriptCore: return "runtime.js.require.keyword"
+        case .python: return "runtime.py.require.keyword"
+        case .ruby: return "runtime.rb.require.keyword"
+        case .perl: return "runtime.pl.require.keyword"
+        case .lua: return "runtime.lua.require.keyword"
+        case .node: return "runtime.node.require.keyword"
+        }
+    }
+
+    var requireKeyword: String {
+        if let per = UserDefaults.standard.string(forKey: requireKey) {
+            return per
+        }
+        if let global = ScriptInterpreter.globalRequireKeyword {
+            return global
+        }
+        return defaultRequireKeyword
+    }
+
     static func isSupported(_ ext: String) -> Bool {
         supportedExtensions.contains(ext.lowercased())
     }
@@ -252,6 +286,7 @@ class Script: NSObject {
         if let lib = Bundle.main.resourceURL?.appendingPathComponent("scripts/lib").path {
             env["BOOP_LIB_DIR"] = lib
         }
+        env["BOOP_REQUIRE_NAME"] = interpreter.requireKeyword
 
         let process = Process()
         process.launchPath = command.first

@@ -8,10 +8,11 @@ state = json.loads(os.environ.get('BOOP_STATE', '{}'))
 module_ext = os.environ.get('BOOP_MODULE_EXT', '.py')
 script_dir = os.environ.get('BOOP_SCRIPT_DIR', '')
 lib_dir = os.environ.get('BOOP_LIB_DIR', '')
+require_name = os.environ.get('BOOP_REQUIRE_NAME', 'boop_require')
 
 _loaded_modules = {}
 
-def boop_require(path):
+def _boop_require(path):
     if not path.endswith(module_ext):
         path += module_ext
     if path.startswith('@boop/'):
@@ -56,7 +57,9 @@ class State:
 
 state_obj = State(state)
 
-globals()['boop_require'] = boop_require
+globals()[require_name] = _boop_require
+if require_name != 'boop_require':
+    globals()['boop_require'] = _boop_require
 
 script_path = sys.argv[1]
 

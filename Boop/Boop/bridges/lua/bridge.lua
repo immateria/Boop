@@ -7,9 +7,10 @@ if ok then state = res else state = {} end
 local MODULE_EXT = os.getenv('BOOP_MODULE_EXT') or '.lua'
 local SCRIPT_DIR = os.getenv('BOOP_SCRIPT_DIR') or ''
 local LIB_DIR = os.getenv('BOOP_LIB_DIR') or ''
+local REQUIRE_NAME = os.getenv('BOOP_REQUIRE_NAME') or 'boop_require'
 
 local loaded = {}
-function boop_require(path)
+local function _boop_require(path)
   local p = path
   if p:sub(-#MODULE_EXT) ~= MODULE_EXT then p = p .. MODULE_EXT end
   local file
@@ -24,6 +25,11 @@ function boop_require(path)
   local mod = f() or {}
   loaded[file] = mod
   return mod
+end
+
+_G[REQUIRE_NAME] = _boop_require
+if REQUIRE_NAME ~= 'boop_require' then
+  _G['boop_require'] = _boop_require
 end
 
 local State = {}
@@ -71,3 +77,4 @@ local stateObj = State:new(state)
 local user = assert(loadfile(script))
 if user then user()(stateObj) end
 print(stateObj:to_json())
+

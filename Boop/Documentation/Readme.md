@@ -50,7 +50,7 @@ You can find more functions in the [Boop Script Repository](https://github.com/I
 
 Yes! Simply follow the instruction in the [Custom Scripts page](CustomScripts.md) to know how to get started.
 Scripts can also be written in Python, Ruby, Perl, Lua and Node.js via small bridge programs that expose the same API used in JavaScript. These interpreters exchange data through JSON in the `BOOP_STATE` environment variable.
-Modules can be imported with the `boop_require` function in Python, Ruby, Perl and Lua. Node.js and JavaScript still use `require`.
+Modules can be imported with a special require function (default `boop_require`) in Python, Ruby, Perl and Lua. You can set a global or per-runtime keyword in the Runtime preferences. Node.js and JavaScript still use `require`.
 
 ### Can scripts make network requests?
 

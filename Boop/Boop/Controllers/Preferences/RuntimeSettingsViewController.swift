@@ -26,10 +26,27 @@ class RuntimeSettingsViewController: NSViewController {
             field.identifier = NSUserInterfaceItemIdentifier(inter.pathKey)
             field.target = self
             field.action = #selector(pathChanged(_:))
+            let keywordField = NSTextField(string: inter.requireKeyword)
+            keywordField.identifier = NSUserInterfaceItemIdentifier(inter.requireKey)
+            keywordField.target = self
+            keywordField.action = #selector(runtimeKeywordChanged(_:))
             row.addArrangedSubview(check)
             row.addArrangedSubview(field)
+            row.addArrangedSubview(keywordField)
             stack.addArrangedSubview(row)
         }
+
+        let reqRow = NSStackView()
+        reqRow.orientation = .horizontal
+        reqRow.spacing = 10
+        let label = NSTextField(labelWithString: "Default keyword")
+        let reqField = NSTextField(string: UserDefaults.standard.string(forKey: "runtime.require.keyword") ?? "")
+        reqField.identifier = NSUserInterfaceItemIdentifier("runtime.require.keyword")
+        reqField.target = self
+        reqField.action = #selector(defaultKeywordChanged(_:))
+        reqRow.addArrangedSubview(label)
+        reqRow.addArrangedSubview(reqField)
+        stack.addArrangedSubview(reqRow)
     }
 
     override func viewWillAppear() {
@@ -45,5 +62,14 @@ class RuntimeSettingsViewController: NSViewController {
     @objc func pathChanged(_ sender: NSTextField) {
         guard let key = sender.identifier?.rawValue else { return }
         UserDefaults.standard.set(sender.stringValue, forKey: key)
+    }
+
+    @objc func runtimeKeywordChanged(_ sender: NSTextField) {
+        guard let key = sender.identifier?.rawValue else { return }
+        UserDefaults.standard.set(sender.stringValue, forKey: key)
+    }
+
+    @objc func defaultKeywordChanged(_ sender: NSTextField) {
+        UserDefaults.standard.set(sender.stringValue, forKey: "runtime.require.keyword")
     }
 }
