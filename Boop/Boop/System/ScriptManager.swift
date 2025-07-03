@@ -119,10 +119,14 @@ function main(state) {
     
     /// Load built in scripts
     func loadDefaultScripts(){
-        let urls = Bundle.main.urls(forResourcesWithExtension: "js", subdirectory: "scripts")
-        
-        urls?.forEach { script in
-            loadScript(url: script, builtIn: true)
+        ScriptInterpreter.supportedExtensions.forEach { ext in
+            let interpreter = ScriptInterpreter(fileExtension: ext)
+            guard interpreter.isEnabled else { return }
+            let urls = Bundle.main.urls(forResourcesWithExtension: ext, subdirectory: "scripts")
+
+            urls?.forEach { script in
+                loadScript(url: script, builtIn: true)
+            }
         }
     }
     
@@ -137,11 +141,12 @@ function main(state) {
             }
             
             let urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
-            
+
             urls.forEach { url in
-                guard url.path.hasSuffix(".js") else {
-                    return
-                }
+                let ext = url.pathExtension
+                guard ScriptInterpreter.isSupported(ext) else { return }
+                let interpreter = ScriptInterpreter(fileExtension: ext)
+                guard interpreter.isEnabled else { return }
                 loadScript(url: url, builtIn: false)
             }
             
@@ -171,8 +176,10 @@ function main(state) {
             
             let json = try JSONSerialization.jsonObject(with: meta.data(using: .utf8)!, options: .allowFragments) as! [String: Any]
             
-            let scriptObject = Script(url: url, script: script, parameters: json, builtIn: builtIn, delegate: self)
-            
+            let interpreter = ScriptInterpreter(fileExtension: url.pathExtension)
+            guard interpreter.isEnabled else { return }
+            let scriptObject = Script(url: url, script: script, parameters: json, builtIn: builtIn, interpreter: interpreter, delegate: self)
+
             scripts.append(scriptObject)
             
             

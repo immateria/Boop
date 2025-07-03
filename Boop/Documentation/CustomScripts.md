@@ -8,7 +8,11 @@ To use custom scripts, you need to tell Boop where to find them. Open the prefer
 
 ## Writing Custom Scripts
 
-You can easily extend Boop with custom scripts to add your own functionality. Each script is a self-contained Javascript file that is loaded at app launch. If you make something cool or useful, feel free to submit a PR and share it with everyone else!
+You can easily extend Boop with custom scripts to add your own functionality. Scripts can be written in a few languages and are loaded at app launch. If you make something cool or useful, feel free to submit a PR and share it with everyone else!
+
+Supported script languages are selected by the file extension. `.js` files run in JavaScriptCore, `.py` files use Python if available, `.rb` files use Ruby, `.pl` files use Perl, `.lua` files use Lua, and `.njs` files run with Node.js.
+External scripts receive the same `state` object as JavaScript. The runtime shells out to a small bridge that loads the script and calls its `main(state)` function. These interpreters read the current editor state from the `BOOP_STATE` environment variable as JSON and should print their changes as JSON to standard output.
+These external interpreters read the current editor state from the `BOOP_STATE` environment variable as JSON and should print their changes as JSON to standard output.
 
 ### Meta info
 
@@ -34,6 +38,9 @@ Each script starts with a declarative JSON document, describing the contents of 
 * `categories` is an optional array or comma-separated string allowing scripts
   to belong to multiple groups, such as `"text"` or `"convert"`. Users can
   filter the picker by category with `cat:name`, e.g. `cat:text`.
+* `permissions` is an optional array or comma-separated list of extra
+  capabilities the script needs. Currently only `"network"` is recognized to
+  allow fetching data from the internet.
 
 An optional property, `bias`, can also be added to help Boop prioritize your scripts. A positive value will move your script higher in the results, a negative value will push it further down. The bias property is a number:
 
@@ -120,6 +127,18 @@ Script execution objects have additional functions to communicate with the user,
 state.postInfo(`${ lines.length } lines removed`)
 state.postError("Invalid XML")
 
+// If the script declares "network" in its permissions, you can
+// fetch remote data synchronously. Optional method and body
+// parameters let you POST data as well:
+let data = state.fetch("https://example.com/api", "POST", JSON.stringify({foo: "bar"}))
+
+```
+
+All external interpreters use the same API:
+
+```python
+def main(state):
+    state.post_info("Hello from Python")
 ```
 
 
@@ -132,7 +151,7 @@ If the user selects more than one part of the text (by using `cmd` or `alt` whil
 
 #### Modules
 
-Starting with version 1.2.0, modules can be imported in Boop scripts. See the [Modules page](Modules.md) for details.
+Starting with version 1.2.0, modules can be imported in Boop scripts. See the [Modules page](Modules.md) for details. The same `require` function works in Python, Ruby, Perl, Lua and Node.js scripts as well.
 
 #### Debugging
 
@@ -153,7 +172,7 @@ JavascriptCore is the environment scripts run in. It is only a subset of Javascr
 
 A few times in this document you may have seen tips about performance, memory leaks, etc. Truth is, this is not that big of a deal because we're running minimal snippets of code in headless sandboxed environment. That being said, even though we're not at webpage-in-a-native-container levels of performance concerns, keeping the interface snappy and memory footprint low should be a priority when developing scripts so that we don't get a whole bunch of angry tweets about how maybe native apps aren't that great after all. (for the record they are that great).
 
-Including all of jQuery to save a few lines of code may not be the greatest move here, so always prefer vanilla javascript functions as your whole script will be kept alive as long as the app is being used. If you'd like some helper functions, consider extracting only the part you need from the library (and clealy mention where it comes from alongside the license) rather than pasting the full source in your script. Includes/requires are not currently supported and not currently planned. Plus, if you use Vanilla you get to brag about how you can do it with nothing but your sharp brain and isn't that what being a developer is all about anyway?
+Including all of jQuery to save a few lines of code may not be the greatest move here, so always prefer vanilla javascript functions as your whole script will be kept alive as long as the app is being used. If you'd like some helper functions, consider extracting only the part you need from the library (and clearly mention where it comes from alongside the license) rather than pasting the full source in your script. Boop provides a simple `require` system so you can split large scripts into smaller modules when needed.
 
 ### Removing limitations
 
