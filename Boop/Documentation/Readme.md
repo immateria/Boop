@@ -49,6 +49,13 @@ You can find more functions in the [Boop Script Repository](https://github.com/I
 ### Can I make my own scripts?
 
 Yes! Simply follow the instruction in the [Custom Scripts page](CustomScripts.md) to know how to get started.
+Scripts can also be written in Python, Ruby, Perl, Lua and Node.js via small bridge programs that expose the same API used in JavaScript. These interpreters exchange data through JSON in the `BOOP_STATE` environment variable.
+Modules can be imported with the `boop_require` function in Python, Ruby, Perl and Lua. Node.js and JavaScript still use `require`.
+
+### Can scripts make network requests?
+
+Yes, but only if they declare the `network` permission in their metadata. When
+allowed, a script can call `state.fetch(url, method, body)` to synchronously download data or POST payloads.
 
 ### Does Boop collect data on me?
 
@@ -60,7 +67,7 @@ The best way to do that is to [file an issue on GitHub](https://github.com/IvanM
 
 ### How is Boop built?
 
-Boop is mostly built using a custom fork of [SavannaKit](https://github.com/IvanMathy/savannakit), originally created by [Louis D'hauwe](http://twitter.com/LouisDhauwe). The search is powered by a custom fork of [Fuse-swift](https://github.com/IvanMathy/fuse-swift). The rest of Boop is simply built in Swift, besides scripts which are Javascript. Go ahead and open some of them to check their license!
+Boop is mostly built using a custom fork of [SavannaKit](https://github.com/IvanMathy/savannakit), originally created by [Louis D'hauwe](http://twitter.com/LouisDhauwe). The search is powered by a custom fork of [Fuse-swift](https://github.com/IvanMathy/fuse-swift). The rest of Boop is simply built in Swift, besides scripts which are primarily JavaScript (but Python, Ruby, Perl, Lua and Node.js are supported too). Go ahead and open some of them to check their license!
 
 ### Do I have to say "Boop" out loud when I press ⌘+B?
 

@@ -34,6 +34,7 @@
                     <tabViewItems>
                         <tabViewItem label="Scripts" identifier="" image="text.and.command.macwindow" catalog="system" id="drV-oE-7k3"/>
                         <tabViewItem label="Colors" image="paintpalette" catalog="system" id="OgA-dF-Ylu"/>
+                        <tabViewItem label="Runtimes" image="terminal" catalog="system" id="Q2u-lh-NBt"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="nRh-fE-4La">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -47,6 +48,7 @@
                         <outlet property="tabView" destination="nRh-fE-4La" id="Lf1-uB-6kn"/>
                         <segue destination="oGW-Ve-Lv5" kind="relationship" relationship="tabItems" id="EhK-SX-Eff"/>
                         <segue destination="dVd-GH-dN9" kind="relationship" relationship="tabItems" id="ZZr-kK-3rR"/>
+                        <segue destination="taR-nA-k0M" kind="relationship" relationship="tabItems" id="iEm-rV-VJ3"/>
                     </connections>
                 </tabViewController>
                 <customObject id="cp6-kM-xr4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -289,6 +291,19 @@
                 <userDefaultsController representsSharedInstance="YES" id="l2g-ul-G9x"/>
             </objects>
             <point key="canvasLocation" x="386" y="722"/>
+        </scene>
+        <!--Runtimes-->
+        <scene sceneID="wkA-Rn-q0b">
+            <objects>
+                <viewController title="Runtimes" id="taR-nA-k0M" customClass="RuntimeSettingsViewController" customModule="Boop" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="RtM-vw-xL1">
+                        <rect key="frame" x="0.0" y="0.0" width="410" height="160"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="bCs-hm-cO0" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="900" y="346"/>
         </scene>
     </scenes>
     <resources>
