@@ -17,6 +17,7 @@ import JavaScriptCore
     func postError(_ error: String)
     func postInfo(_ info: String)
     func insert(_ newValue: String)
+    func fetch(_ url: String, _ method: String?, _ body: String?) -> String?
 }
 
 
@@ -79,6 +80,30 @@ import JavaScriptCore
         self.fullText?.insert(contentsOf: newValue, at: point)
         
         self.insertOffset += newValue.count
-        
+
+    }
+
+    func fetch(_ url: String, _ method: String? = nil, _ body: String? = nil) -> String? {
+        guard script?.permissions.contains(.network) == true else {
+            postError("Network permission required")
+            return nil
+        }
+        guard let u = URL(string: url) else { return nil }
+        var request = URLRequest(url: u)
+        request.httpMethod = method ?? "GET"
+        if let body = body { request.httpBody = body.data(using: .utf8) }
+        let sema = DispatchSemaphore(value: 0)
+        var result: String?
+        let task = URLSession.shared.dataTask(with: request) { data, _, _ in
+            if let data = data {
+                result = String(data: data, encoding: .utf8)
+            } else {
+                self.postError("Failed to fetch")
+            }
+            sema.signal()
+        }
+        task.resume()
+        sema.wait()
+        return result
     }
 }

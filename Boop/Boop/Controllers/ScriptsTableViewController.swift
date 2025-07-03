@@ -22,18 +22,36 @@ class ScriptsTableViewController: NSViewController, NSTableViewDelegate, NSTable
         return results.count
     }
     
-    private func scriptIcon(identifier: String?) -> NSImage? {
-        guard let identifier = identifier else {
-            return NSImage(named: "icons8-unknown")
+    private func scriptIcon(identifier: String?, interpreter: ScriptInterpreter) -> NSImage? {
+        var base: NSImage?
+        if let id = identifier {
+            if let named = NSImage(named: "icons8-\(id)") {
+                base = named
+            } else if #available(macOS 11.0, *),
+                      let system = NSImage(systemSymbolName: id, accessibilityDescription: nil) {
+                base = system
+            }
         }
-        if let namedImage = NSImage(named: "icons8-\(identifier)") {
-            return namedImage
-        }
-        if #available(macOS 11.0, *),
-           let systemImage = NSImage(systemSymbolName: identifier, accessibilityDescription: nil) {
-            return systemImage
-        }
-        return nil
+        base = base ?? NSImage(named: "icons8-unknown")
+
+        guard let image = base else { return nil }
+
+        let size = image.size
+        let newImage = NSImage(size: size)
+        newImage.lockFocus()
+        image.draw(in: NSRect(origin: .zero, size: size))
+
+        let label = interpreter.shortName as NSString
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 9),
+            .foregroundColor: NSColor.white,
+            .backgroundColor: NSColor.black.withAlphaComponent(0.6)
+        ]
+        let textSize = label.size(withAttributes: attrs)
+        let rect = NSRect(x: size.width - textSize.width - 2, y: 0, width: textSize.width, height: textSize.height)
+        label.draw(in: rect, withAttributes: attrs)
+        newImage.unlockFocus()
+        return newImage
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {        
@@ -53,7 +71,7 @@ class ScriptsTableViewController: NSViewController, NSTableViewDelegate, NSTable
         }
         view.subtitleLabel.stringValue = subtitle
         
-        view.imageView?.image = self.scriptIcon(identifier: script.icon)
+        view.imageView?.image = self.scriptIcon(identifier: script.icon, interpreter: script.interpreter)
         
         return view
         

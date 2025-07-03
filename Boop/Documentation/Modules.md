@@ -6,16 +6,17 @@ ___
 *<p align=center>Modules are available in Boop version 1.2.0 and above.</p>*
 ___
 
-Just to be very clear before we get started: **Boop does not support commonJS/node/ES6 modules**. It has a custom import system that may or may not be compatible with some existing modules.
+Just to be very clear before we get started: **Boop does not support commonJS/node/ES6 modules**. It has a custom import system that may or may not be compatible with some existing modules. The same mechanism is also exposed to Python, Ruby, Perl, Lua and Node.js bridges. In languages other than JavaScript and Node.js the import function defaults to `boop_require`. You can set a global override or per-runtime keyword in the Runtime preferences. The chosen keyword is passed to interpreters via the `BOOP_REQUIRE_NAME` environment variable.
 
 ## Importing modules
 
-To import a module, use the require function. It'll will return the contents of `module.exports`:
+To import a module, use the `require` function in JavaScript and Node.js, or the configured keyword (default `boop_require`) in Python, Ruby, Perl and Lua. It will return the contents of `module.exports`:
 
 ```javascript
 const test = require('lib/testLib')
 const test = require('modules/otherLib.js')
 ```
+// In Python/Ruby/Perl/Lua use `boop_require('lib/testLib')` (or your custom keyword)
 
 If you do not include a `.js` extension, the system will add one automatically.
 

@@ -79,7 +79,8 @@
 		2CA245DC224822EA00586DFD /* ScriptTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CA245DB224822EA00586DFD /* ScriptTableView.swift */; };
 		2CC211C3236E3141007CECEE /* PreferencesTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC211C2236E3141007CECEE /* PreferencesTabViewController.swift */; };
 		2CC211C5236FB5C1007CECEE /* ScriptsSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC211C4236FB5C1007CECEE /* ScriptsSettingsViewController.swift */; };
-		2CEC93FA249C2D600080B9B8 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEC93F9249C2D600080B9B8 /* ThemeSettingsViewController.swift */; };
+               2CEC93FA249C2D600080B9B8 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEC93F9249C2D600080B9B8 /* ThemeSettingsViewController.swift */; };
+               AA0AA002FFFFFFF000000001 /* RuntimeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0AA001FFFFFFF000000001 /* RuntimeSettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,7 +158,8 @@
 		2CB9D7F024319BAC00135424 /* Fuse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fuse.framework; path = ../../../Carthage/Build/Mac/Fuse.framework; sourceTree = "<group>"; };
 		2CC211C2236E3141007CECEE /* PreferencesTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTabViewController.swift; sourceTree = "<group>"; };
 		2CC211C4236FB5C1007CECEE /* ScriptsSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptsSettingsViewController.swift; sourceTree = "<group>"; };
-		2CEC93F9249C2D600080B9B8 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
+               2CEC93F9249C2D600080B9B8 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
+               AA0AA001FFFFFFF000000001 /* RuntimeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeSettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -322,16 +324,17 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		2CC211C1236E3125007CECEE /* Preferences */ = {
-			isa = PBXGroup;
-			children = (
-				2CC211C2236E3141007CECEE /* PreferencesTabViewController.swift */,
-				2CC211C4236FB5C1007CECEE /* ScriptsSettingsViewController.swift */,
-				2CEC93F9249C2D600080B9B8 /* ThemeSettingsViewController.swift */,
-			);
-			path = Preferences;
-			sourceTree = "<group>";
-		};
+               2CC211C1236E3125007CECEE /* Preferences */ = {
+                        isa = PBXGroup;
+                        children = (
+                                2CC211C2236E3141007CECEE /* PreferencesTabViewController.swift */,
+                                2CC211C4236FB5C1007CECEE /* ScriptsSettingsViewController.swift */,
+                                2CEC93F9249C2D600080B9B8 /* ThemeSettingsViewController.swift */,
+                                AA0AA001FFFFFFF000000001 /* RuntimeSettingsViewController.swift */,
+                        );
+                        path = Preferences;
+                        sourceTree = "<group>";
+                };
 		53D77B44249A4019002A2F02 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -555,9 +558,10 @@
 				2C60A54C24871273006496BA /* MainViewController.swift in Sources */,
 				2C60A54D24871273006496BA /* StatusView.swift in Sources */,
 				2C60A54E24871273006496BA /* UpdateTextField.swift in Sources */,
-				2C60A54F24871273006496BA /* PreferencesTabViewController.swift in Sources */,
-				2C60A55024871273006496BA /* ScriptsTableViewController.swift in Sources */,
-			);
+                               2C60A54F24871273006496BA /* PreferencesTabViewController.swift in Sources */,
+                               2C60A55024871273006496BA /* ScriptsTableViewController.swift in Sources */,
+                                AA0AA002FFFFFFF000000001 /* RuntimeSettingsViewController.swift in Sources */,
+                        );
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
